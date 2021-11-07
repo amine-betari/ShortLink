@@ -1,22 +1,32 @@
-name: CD
+name: CD process for Symfony 5
 on:
   push:
     branches: [ master ]
 
 ## Different pipelines
 jobs:
-  deploy:
+  symfony:
     runs-on: ubuntu-latest
-
     env:
       SSHPASS: ${{ secrets.APP_PASS }}
-
     steps:
-      - uses: actions/checkout@v2
+      # —— Setup Github actions 🐙 —————————————————————————————————————————————
+      # https://github.com/actions/checkout (official)
+      - name: "Checkout"
+        uses: actions/checkout@v2
 
-      - name: APT UPDATE and INSTALL SSHPASS
+      - name: INSTALL SSHPASS
         run:
           sudo apt update && sudo apt install sshpass
+
+      - name: Check PHP Version
+        run: php -v
+
+      # https://github.com/zhulik/redis-action (community)
+      - name: Setup Redis with zhulik/redis-action
+        uses: zhulik/redis-action@1.1.0
+        with:
+          redis version: '5'
 
       - name: deploy
         run:
