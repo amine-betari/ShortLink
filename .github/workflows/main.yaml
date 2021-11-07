@@ -7,6 +7,20 @@ on:
 jobs:
   symfony:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.4
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: symfony
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     env:
       SSHPASS: ${{ secrets.APP_PASS }}
     steps:
@@ -27,7 +41,7 @@ jobs:
         with:
           redis version: '5'
 
-      - name: deploy
+      - name: Deploy (Composer Install & Doctrine Migrations)
         run:
           sshpass -e ssh -o stricthostkeychecking=no ${{ secrets.APP_USER }}@${{ secrets.APP_HOST }}
           "cd public_html/ &&
