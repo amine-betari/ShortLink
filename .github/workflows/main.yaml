@@ -23,6 +23,7 @@ jobs:
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     env:
       SSHPASS: ${{ secrets.APP_PASS }}
+      DATABASE_URL: mysql://root@127.0.0.1:3306/symfony
     steps:
       # —— Setup Github actions 🐙 —————————————————————————————————————————————
       # https://github.com/actions/checkout (official)
@@ -50,7 +51,11 @@ jobs:
       - name: LS
         run: ls -al
 
-      - name: Deploy (Composer Install & Doctrine Migrations)
+      - name: Symfony Doctrine Migrations
+        run:
+          php bin/console d:s:c && php bin/console d:m:m -n
+
+      - name: Deploy On Server (Composer Install & Doctrine Migrations)
         run:
           sshpass -e ssh -o stricthostkeychecking=no ${{ secrets.APP_USER }}@${{ secrets.APP_HOST }}
           "cd public_html/ &&
