@@ -35,3 +35,9 @@ jobs:
           git pull &&
           composer install &&
           php bin/console d:m:m -n"
+
+      - name: PHPUnit for Symfony
+        uses: chindit/actions-phpunit-symfony@master
+        
+      - name: PHPUnit
+        uses: chindit/actions-phpunit-symfony@master
