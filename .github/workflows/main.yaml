@@ -16,8 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: INSTALL SSHPASS
-        run:
-          sudo apt update && sudo apt install sshpass
+        run: sudo apt update && sudo apt install sshpass
 
       - name: Check PHP Version
         run: php -v
@@ -28,6 +27,9 @@ jobs:
         with:
           redis version: '5'
 
+      - name: PHPUnit for Symfony
+        uses: chindit/actions-phpunit-symfony@master
+
       - name: deploy
         run:
           sshpass -e ssh -o stricthostkeychecking=no ${{ secrets.APP_USER }}@${{ secrets.APP_HOST }}
@@ -36,8 +38,5 @@ jobs:
           composer install &&
           php bin/console d:m:m -n"
 
-      - name: PHPUnit for Symfony
-        uses: chindit/actions-phpunit-symfony@master
-        
       - name: PHPUnit
         uses: chindit/actions-phpunit-symfony@master
