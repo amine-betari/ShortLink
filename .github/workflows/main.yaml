@@ -41,6 +41,15 @@ jobs:
 #        with:
 #          redis version: '5'
 
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --no-scripts
+
+      - name: PHPUnit
+        uses: chindit/actions-phpunit-symfony@master
+
+      - name: LS
+        run: ls -al
+
       - name: Deploy (Composer Install & Doctrine Migrations)
         run:
           sshpass -e ssh -o stricthostkeychecking=no ${{ secrets.APP_USER }}@${{ secrets.APP_HOST }}
@@ -49,8 +58,3 @@ jobs:
           composer install &&
           php bin/console d:m:m -n"
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --no-scripts
-
-      - name: PHPUnit
-        uses: chindit/actions-phpunit-symfony@master
