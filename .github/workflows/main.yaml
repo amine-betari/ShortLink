@@ -36,7 +36,7 @@ jobs:
           php bin/console d:m:m -n"
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-        
+        run: composer install --prefer-dist --no-progress --no-suggest --no-scripts
+
       - name: PHPUnit
         uses: chindit/actions-phpunit-symfony@master
