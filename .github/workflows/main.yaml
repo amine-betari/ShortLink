@@ -2,28 +2,16 @@ name: CD process for Symfony 5
 on:
   push:
     branches: [ master ]
-
-## Different pipelines
+  pull_request:
+    branches:
+      - master
+      ## Different pipelines
 jobs:
   symfony:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mariadb:10.4
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: symfony
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-      redis:
-        image: redis:latest
-        ports:
-          - 6379:6379
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
     env:
       SSHPASS: ${{ secrets.APP_PASS }}
-      DATABASE_URL: mysql://root@127.0.0.1:3306/symfony
     steps:
       # —— Setup Github actions 🐙 —————————————————————————————————————————————
       # https://github.com/actions/checkout (official)
@@ -33,27 +21,8 @@ jobs:
       - name: INSTALL SSHPASS
         run: sudo apt update && sudo apt install sshpass
 
-      - name: Check PHP Version
-        run: php -v
-#
-#      # https://github.com/zhulik/redis-action (community)
-#      - name: Setup Redis with zhulik/redis-action
-#        uses: zhulik/redis-action@1.1.0
-#        with:
-#          redis version: '5'
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --no-scripts
-
-      - name: PHPUnit
-        uses: chindit/actions-phpunit-symfony@master
-
       - name: LS
         run: ls -al
-
-      - name: Create Database
-        run:
-          php bin/console d:s:c
 
       - name: Deploy On Server (Composer Install & Doctrine Migrations)
         run:
