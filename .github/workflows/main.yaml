@@ -53,7 +53,7 @@ jobs:
 
       - name: Symfony Doctrine Migrations
         run:
-          php bin/console d:s:c && php bin/console d:m:m -n
+          php bin/console d:m:m -n
 
       - name: Deploy On Server (Composer Install & Doctrine Migrations)
         run:
