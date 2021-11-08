@@ -51,9 +51,9 @@ jobs:
       - name: LS
         run: ls -al
 
-      - name: Symfony Doctrine Migrations
+      - name: Create Database
         run:
-          php bin/console d:m:m -n
+          php bin/console d:s:c
 
       - name: Deploy On Server (Composer Install & Doctrine Migrations)
         run:
